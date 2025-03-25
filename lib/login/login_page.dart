@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "Bem vindo de volta!",
+                          "Bem vindo",
                           style: TextStyle(
                               fontSize: 22, fontWeight: FontWeight.bold),
                         ),
@@ -70,6 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         SizedBox(height: 20),
                         TextField(
+                          controller: emailController,
                           decoration: InputDecoration(
                             labelText: "Email",
                             suffixIcon: Icon(Icons.email_outlined),
@@ -79,6 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         SizedBox(height: 15),
                         TextField(
+                          controller: passwordController,
                           obscureText: obscureText,
                           decoration: InputDecoration(
                             labelText: "Senha",
@@ -123,15 +125,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                 isLoading = true;
                               });
                               try {
+                                print('email: ${emailController.text}'
+                                    'senha: ${passwordController.text}');
                                 UserCredential credential = await FirebaseAuth
                                     .instance
                                     .signInWithEmailAndPassword(
-                                  email: emailController.text.trim(),
-                                  password: passwordController.text.trim(),
+                                  email: emailController.text,
+                                  password: passwordController.text,
                                 );
                                 if (credential.user != null) {
                                   if (credential.user!.emailVerified) {
-                                    Navigator.pop(context);
                                     await Provider.of<UserProvider>(context,
                                             listen: false)
                                         .loadUserData();
@@ -141,6 +144,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                           content:
                                               Text('Autenticado com Sucesso!')),
                                     );
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    Navigator.of(context).pop();
                                   } else {
                                     FirebaseAuth.instance.signOut();
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -148,16 +155,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                           content: Text(
                                               'Cheque sua caixa de entrada')),
                                     );
+                                    setState(() {
+                                      isLoading = false;
+                                    });
                                   }
                                 }
                                 setState(() {
-                                  isLoading = true;
+                                  isLoading = false;
                                 });
                               } catch (e) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                      content: Text('Erro ao fazer login: $e')),
+                                    content: Text('Erro ao fazer login: $e'),
+                                  ),
                                 );
+                                print(e);
                                 setState(() {
                                   isLoading = false;
                                 });

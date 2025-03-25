@@ -42,6 +42,9 @@ dependencies:
   provider: ^6.1.2
   brasil_fields: ^1.17.0
   br_validators: ^2.0.4
+  flutter_map: ^8.1.1
+  latlong2: ^0.9.1
+  geolocator: ^13.0.3
 
 dev_dependencies:
   flutter_test:
