@@ -39,6 +39,9 @@ dependencies:
   cloud_firestore: ^5.6.5
   firebase_auth: ^5.5.1
   flutter_launcher_icons: ^0.14.3
+  provider: ^6.1.2
+  brasil_fields: ^1.17.0
+  br_validators: ^2.0.4
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +72,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/logo.png
+    - assets/mapa.png
+    - assets/logo_rounded.png
 
   fonts:
     - family: Poppins
