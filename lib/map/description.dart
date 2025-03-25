@@ -88,6 +88,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                       "description": description,
                       'is_confirmed': false,
                       'is_confirmed_by': [],
+                      'is_unconfirmed_by': [],
                       "picture": link,
                       "lat": widget.userLocation.latitude,
                       "long": widget.userLocation.longitude,

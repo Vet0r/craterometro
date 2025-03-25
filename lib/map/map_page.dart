@@ -3,7 +3,6 @@ import 'package:craterometro/map/picture.dart';
 import 'package:craterometro/map/widgets/standard_marker.dart';
 import 'package:craterometro/profile/profile_screen.dart';
 import 'package:craterometro/theme/theme_colors.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
