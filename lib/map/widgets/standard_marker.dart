@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:craterometro/map/widgets/show_full_image.dart';
+import 'package:craterometro/user.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void showReportPopup(BuildContext context, String imageUrl, String username,
-    String description) {
+    String description, String id) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -52,12 +56,59 @@ void showReportPopup(BuildContext context, String imageUrl, String username,
                 ],
               ),
             ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text("Fechar", style: TextStyle(color: Colors.blue)),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Provider.of<UserProvider>(context, listen: false).isAdmin
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Deletar ponto"),
+                                content: Text(
+                                    "Tem certeza que deseja deletar este ponto?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text("Cancelar",
+                                        style: TextStyle(color: Colors.red)),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      final Reference ref = FirebaseStorage
+                                          .instance
+                                          .refFromURL(imageUrl);
+                                      ref.delete();
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                      FirebaseFirestore.instance
+                                          .collection('markers')
+                                          .doc(id)
+                                          .delete();
+                                    },
+                                    child: Text("Deletar",
+                                        style: TextStyle(color: Colors.red)),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      )
+                    : Container(),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text("Fechar", style: TextStyle(color: Colors.blue)),
+                ),
+              ],
             ),
           ],
         ),

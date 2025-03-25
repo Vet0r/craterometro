@@ -103,6 +103,7 @@ class _MapPageState extends State<MapPage> {
                       doc.data()['picture'],
                       doc.data()['user_name'],
                       doc.data()['description'],
+                      doc.id,
                     );
                   },
                 ),
