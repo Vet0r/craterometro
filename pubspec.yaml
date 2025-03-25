@@ -45,6 +45,8 @@ dependencies:
   flutter_map: ^8.1.1
   latlong2: ^0.9.1
   geolocator: ^13.0.3
+  image_picker: ^1.1.2
+  firebase_storage: ^12.4.4
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +79,7 @@ flutter:
     - assets/logo.png
     - assets/mapa.png
     - assets/logo_rounded.png
+    - assets/pin.png
 
   fonts:
     - family: Poppins
