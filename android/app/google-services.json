@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "966944467345",
+    "project_id": "craterometro",
+    "storage_bucket": "craterometro.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966944467345:android:d62ca11b537d1222a9d230",
+        "android_client_info": {
+          "package_name": "com.example.craterometro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4rkk_OM4Ywc8HAEWC7e1wH12y0LgczjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
