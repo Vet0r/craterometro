@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:craterometro/map/picture.dart';
+import 'package:craterometro/map/widgets/standard_marker.dart';
+import 'package:craterometro/profile/profile_screen.dart';
 import 'package:craterometro/theme/theme_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +21,8 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   MapController mapController = MapController();
   LatLng? _userLocation;
-  @override
   LatLng _markerPosition = LatLng(-5.1870, -37.3443);
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   void initState() {
     super.initState();
     _getUserLocation();
@@ -65,7 +67,12 @@ class _MapPageState extends State<MapPage> {
         actions: [
           IconButton(
               onPressed: () {
-                FirebaseAuth.instance.signOut();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfileScreen(),
+                  ),
+                );
               },
               icon: Icon(
                 Icons.person,
@@ -75,44 +82,72 @@ class _MapPageState extends State<MapPage> {
         elevation: 0,
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('markers').snapshots(),
+        stream: _firestore.collection('markers').snapshots(),
         builder: (context, snapshot) {
+          List<Marker> markers = snapshot.data!.docs.map((doc) {
+            double latitude = doc.data()['lat'];
+            double longitude = doc.data()['long'];
+            return Marker(
+                width: 50,
+                height: 50,
+                point: LatLng(latitude, longitude),
+                child: GestureDetector(
+                  child: Icon(
+                    Icons.location_on,
+                    color: Colors.red,
+                    size: 40,
+                  ),
+                  onTap: () {
+                    showReportPopup(
+                      context,
+                      doc.data()['picture'],
+                      doc.data()['user_name'],
+                      doc.data()['description'],
+                    );
+                  },
+                ),
+                rotate: false);
+          }).toList();
           if (!snapshot.hasData) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
-          return FlutterMap(
-            mapController: mapController,
-            options: MapOptions(
-              onPositionChanged: (_, hasGesture) {
-                if (hasGesture) {
-                  _onMapMoved();
-                }
-              },
-              initialCenter: LatLng(
-                -6.11198,
-                -38.20528,
-              ),
-              initialZoom: 15.0,
-              onTap: (tapPosition, point) => setNewpingOnMap(point),
-            ),
+          return Stack(
             children: [
-              TileLayer(
-                urlTemplate:
-                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                subdomains: ['a', 'b', 'c'],
+              FlutterMap(
+                mapController: mapController,
+                options: MapOptions(
+                  onPositionChanged: (_, hasGesture) {
+                    if (hasGesture) {
+                      _onMapMoved();
+                    }
+                  },
+                  initialCenter: LatLng(
+                    -6.11198,
+                    -38.20528,
+                  ),
+                  initialZoom: 15.0,
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    subdomains: ['a', 'b', 'c'],
+                  ),
+                  MarkerLayer(
+                    markers: markers,
+                  ),
+                ],
               ),
               showmarker
-                  ? MarkerLayer(markers: [
-                      Marker(
-                        width: 40.0,
-                        height: 40.0,
-                        point: _markerPosition,
-                        child: Icon(Icons.location_on,
-                            color: Colors.blue, size: 40),
-                      )
-                    ])
+                  ? Align(
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.location_on,
+                        color: Colors.blue,
+                      ),
+                    )
                   : Container(),
             ],
           );
@@ -128,10 +163,11 @@ class _MapPageState extends State<MapPage> {
                     CameraScreen(userLocation: _markerPosition),
               ),
             );
+            showmarker = false;
           } else {
             setState(() {
               _markerPosition = mapController.camera.center;
-              showmarker = !showmarker;
+              showmarker = true;
             });
           }
         },
@@ -162,18 +198,5 @@ class _MapPageState extends State<MapPage> {
     } else {
       print("Permissão negada");
     }
-  }
-
-  setNewpingOnMap(LatLng latlng) {
-    // setState(() {
-    //   _markers.add(
-    //     Marker(
-    //       width: 40.0,
-    //       height: 40.0,
-    //       point: latlng,
-    //       child: Icon(Icons.location_on, color: Colors.blue, size: 40),
-    //     ),
-    //   );
-    // });
   }
 }

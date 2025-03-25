@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:craterometro/theme/theme_colors.dart';
+import 'package:craterometro/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class DescriptionScreen extends StatefulWidget {
   final XFile imageFile;
   LatLng userLocation;
@@ -25,7 +28,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Adicionar Descrição",
+          "Enviar ",
           style: TextStyle(color: Colors.white),
         ),
         iconTheme: IconThemeData(color: Colors.white),
@@ -79,7 +82,8 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                         .child(fileName);
                     await ref.putFile(File(widget.imageFile.path));
                     String link = await ref.getDownloadURL();
-
+                    var user =
+                        await Provider.of<UserProvider>(context, listen: false);
                     FirebaseFirestore.instance.collection("markers").doc().set({
                       "description": description,
                       'is_confirmed': false,
@@ -88,6 +92,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                       "lat": widget.userLocation.latitude,
                       "long": widget.userLocation.longitude,
                       'user': FirebaseAuth.instance.currentUser!.uid,
+                      'user_name': user.name,
                     });
                     showDialog(
                       context: context,

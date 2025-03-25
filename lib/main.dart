@@ -52,6 +52,7 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     _getUserLocation();
+    Provider.of<UserProvider>(context, listen: false).loadUserData();
   }
 
   @override

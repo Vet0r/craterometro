@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:latlong2/latlong.dart';
 
+// ignore: must_be_immutable
 class CameraScreen extends StatefulWidget {
   LatLng userLocation;
   CameraScreen({super.key, required this.userLocation});
@@ -20,6 +21,16 @@ class _CameraScreenState extends State<CameraScreen> {
   Future<void> _takePhoto() async {
     final XFile? image =
         await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
+    setState(() {
+      if (image != null) {
+        _imageFile = image;
+      }
+    });
+  }
+
+  Future<void> _choosePhoto() async {
+    final XFile? image =
+        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
     setState(() {
       if (image != null) {
         _imageFile = image;
@@ -79,6 +90,25 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
             ),
             SizedBox(height: 15),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton.icon(
+                onPressed: _choosePhoto,
+                icon: Icon(Icons.photo_album_sharp, color: Colors.white),
+                label: Text(
+                  "Escolher da Galeria",
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: ThemeColors.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 15),
             _imageFile != null
                 ? SizedBox(
                     width: double.infinity,
@@ -96,7 +126,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       },
                       icon: Icon(Icons.edit, color: Colors.white),
                       label: Text(
-                        "Adicionar Descrição",
+                        "Enviar",
                         style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
                       style: ElevatedButton.styleFrom(
