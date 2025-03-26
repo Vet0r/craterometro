@@ -65,19 +65,21 @@ class _MapPageState extends State<MapPage> {
           ],
         ),
         actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfileScreen(),
-                  ),
-                );
-              },
-              icon: Icon(
-                Icons.person,
-                color: ThemeColors.primaryColor,
-              ))
+          FirebaseAuth.instance.currentUser != null
+              ? IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfileScreen(),
+                      ),
+                    );
+                  },
+                  icon: Icon(
+                    Icons.person,
+                    color: ThemeColors.primaryColor,
+                  ))
+              : Container(),
         ],
         elevation: 0,
       ),
@@ -106,6 +108,7 @@ class _MapPageState extends State<MapPage> {
                       doc.data()['user_name'],
                       doc.data()['description'],
                       doc.id,
+                      doc.data()['user'],
                     );
                   },
                 ),

@@ -2,12 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:craterometro/map/widgets/show_full_image.dart';
 import 'package:craterometro/theme/theme_colors.dart';
 import 'package:craterometro/user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void showReportPopup(BuildContext context, String imageUrl, String username,
-    String description, String id) {
+    String description, String id, String reporterId) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -61,7 +62,11 @@ void showReportPopup(BuildContext context, String imageUrl, String username,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      var doc = await FirebaseFirestore.instance
+                          .collection('markers')
+                          .doc(id)
+                          .get();
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -82,10 +87,6 @@ void showReportPopup(BuildContext context, String imageUrl, String username,
                                           .uid
                                     ])
                                   });
-                                  var doc = await FirebaseFirestore.instance
-                                      .collection('markers')
-                                      .doc(id)
-                                      .get();
                                   if ((doc.data()!['is_unconfirmed_by']
                                               as List<dynamic>)
                                           .length >
@@ -126,10 +127,6 @@ void showReportPopup(BuildContext context, String imageUrl, String username,
                                           .uid
                                     ])
                                   });
-                                  var doc = await FirebaseFirestore.instance
-                                      .collection('markers')
-                                      .doc(id)
-                                      .get();
                                   if ((doc.data()!['is_confirmed_by']
                                               as List<dynamic>)
                                           .length >
@@ -152,7 +149,8 @@ void showReportPopup(BuildContext context, String imageUrl, String username,
                     },
                     child: Text("Esse buraco existe?",
                         style: TextStyle(color: Colors.blue))),
-                Provider.of<UserProvider>(context, listen: false).isAdmin
+                (Provider.of<UserProvider>(context, listen: false).isAdmin ||
+                        (FirebaseAuth.instance.currentUser?.uid == reporterId))
                     ? IconButton(
                         icon: Icon(
                           Icons.delete,
