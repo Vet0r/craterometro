@@ -87,7 +87,7 @@ void showReportPopup(BuildContext context, String imageUrl, String username,
                                       .doc(id)
                                       .get();
                                   if ((doc.data()!['is_unconfirmed_by']
-                                              as List<String>)
+                                              as List<dynamic>)
                                           .length >
                                       5) {
                                     final Reference ref = FirebaseStorage
@@ -102,7 +102,7 @@ void showReportPopup(BuildContext context, String imageUrl, String username,
                                   Navigator.pop(context);
                                   Navigator.pop(context);
                                 },
-                                child: Text("Negar",
+                                child: Text("Não existe",
                                     style: TextStyle(color: Colors.red)),
                               ),
                               TextButton(
@@ -131,7 +131,7 @@ void showReportPopup(BuildContext context, String imageUrl, String username,
                                       .doc(id)
                                       .get();
                                   if ((doc.data()!['is_confirmed_by']
-                                              as List<String>)
+                                              as List<dynamic>)
                                           .length >
                                       5) {
                                     FirebaseFirestore.instance
@@ -142,7 +142,7 @@ void showReportPopup(BuildContext context, String imageUrl, String username,
                                   Navigator.pop(context);
                                   Navigator.pop(context);
                                 },
-                                child: Text("Aprovar",
+                                child: Text("Existe",
                                     style: TextStyle(color: Colors.green)),
                               ),
                             ],
@@ -150,8 +150,8 @@ void showReportPopup(BuildContext context, String imageUrl, String username,
                         },
                       );
                     },
-                    child:
-                        Text("Aprovar", style: TextStyle(color: Colors.blue))),
+                    child: Text("Esse buraco existe?",
+                        style: TextStyle(color: Colors.blue))),
                 Provider.of<UserProvider>(context, listen: false).isAdmin
                     ? IconButton(
                         icon: Icon(

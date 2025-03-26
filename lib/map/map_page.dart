@@ -93,7 +93,9 @@ class _MapPageState extends State<MapPage> {
                 child: GestureDetector(
                   child: Icon(
                     Icons.location_on,
-                    color: Colors.red,
+                    color: doc.data()['is_confirmed']
+                        ? ThemeColors.pinColor
+                        : ThemeColors.pinUnconfirmedColor,
                     size: 40,
                   ),
                   onTap: () {

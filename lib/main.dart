@@ -65,7 +65,7 @@ class _MapScreenState extends State<MapScreen> {
       body: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
-            return snapshot.data == null
+            return snapshot.data?.email == null
                 ? Stack(
                     children: [
                       FlutterMap(
