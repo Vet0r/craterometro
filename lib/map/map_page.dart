@@ -3,6 +3,7 @@ import 'package:craterometro/map/picture.dart';
 import 'package:craterometro/map/widgets/standard_marker.dart';
 import 'package:craterometro/profile/profile_screen.dart';
 import 'package:craterometro/theme/theme_colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -155,34 +156,36 @@ class _MapPageState extends State<MapPage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (showmarker) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    CameraScreen(userLocation: _markerPosition),
+      floatingActionButton: FirebaseAuth.instance.currentUser != null
+          ? FloatingActionButton(
+              onPressed: () {
+                if (showmarker) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          CameraScreen(userLocation: _markerPosition),
+                    ),
+                  );
+                  showmarker = false;
+                } else {
+                  setState(() {
+                    _markerPosition = mapController.camera.center;
+                    showmarker = true;
+                  });
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 4.0),
+                child: Image.asset('assets/pin.png', height: 35),
               ),
-            );
-            showmarker = false;
-          } else {
-            setState(() {
-              _markerPosition = mapController.camera.center;
-              showmarker = true;
-            });
-          }
-        },
-        child: Padding(
-          padding: const EdgeInsets.only(left: 4.0),
-          child: Image.asset('assets/pin.png', height: 35),
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-        ),
-        backgroundColor: const Color.fromARGB(39, 0, 0, 0),
-        elevation: 0.0,
-      ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+              backgroundColor: const Color.fromARGB(39, 0, 0, 0),
+              elevation: 0.0,
+            )
+          : Container(),
     );
   }
 

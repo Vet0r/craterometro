@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:craterometro/theme/theme_colors.dart';
 import 'package:flutter/services.dart';
+import 'package:br_validators/br_validators.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -30,9 +31,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
 
+    if (nameController.text.isEmpty ||
+        emailController.text.isEmpty ||
+        cpfController.text.isEmpty ||
+        passwordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Preencha todos os campos.")),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
     if (password != confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("As senhas não coincidem.")),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    if (!BRValidators.validateCPF(cpfController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("CPF inválido.")),
       );
       setState(() {
         isLoading = false;

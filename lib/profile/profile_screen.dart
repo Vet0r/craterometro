@@ -56,6 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () {
               FirebaseAuth.instance.signOut();
               Navigator.of(context).pop();
+              Provider.of<UserProvider>(context, listen: false).clearUser();
             },
             child: Text(
               "Desconectar",
